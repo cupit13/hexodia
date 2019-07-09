@@ -20,7 +20,9 @@ public class movement : MonoBehaviour
     public GameObject lookAtTarget;
     public GameObject rotatedObj;
     public Vector2 roundedPos;
+    public Vector2 lastPos;
     public bool isFalling;
+    public bool isOnEdge;
 
     void Start()
     {
@@ -37,59 +39,89 @@ public class movement : MonoBehaviour
 
     Vector2 roundedPosOp(float tx, float tz)
     {
-        int txR = Mathf.CeilToInt(tx + 4.5f);
-        int tyR = Mathf.CeilToInt(tz + 4.5f);
+        float mod = 1;
+        int txR;
+        int tyR;
+        if (((tx +4.5f)%mod) < .5f)
+        {
+           txR  = Mathf.FloorToInt(tx + 4.5f);
+        }
+        else
+        {
+           txR = Mathf.CeilToInt(tx + 4.5f);
+        }
+
+        if (((tz + 4.5f) % mod) < .5f)
+        {
+            tyR = Mathf.FloorToInt(tz + 4.5f);
+        }
+        else
+        {
+            tyR = Mathf.CeilToInt(tz + 4.5f);
+        }
+         
         Vector2 res = new Vector2(txR, tyR);
         return res;
     }
 
+    void lastPostCalc()
+    {
+        Vector2 curPos = roundedPosOp(transform.position.x, transform.position.z);
+
+        if (roundedPos != curPos)
+        {
+            if (!isOnEdge)
+            { 
+            lastPos = roundedPos;
+            }
+            roundedPos = curPos;
+        }
+    }
     void Update()
     {
-        roundedPos = roundedPosOp(transform.position.x, transform.position.z);
 
-        if (characterController.isGrounded)
+
+        if (Mathf.Abs(moveDirection.x) > 0 || Mathf.Abs(moveDirection.y) > 0 || Mathf.Abs(moveDirection.z) > 0)
         {
-            if (Mathf.Abs(moveDirection.x) > 0 || Mathf.Abs(moveDirection.y) > 0 || Mathf.Abs(moveDirection.z) > 0)
-            {
-                lookAtTarget.transform.localPosition = new Vector3(-Input.GetAxis("Vertical"), 0, Input.GetAxis("Horizontal"));
-                rotatedObj.transform.LookAt(lookAtTarget.transform);
-            }
-
-            if (!isFalling)
-            {
-                // We are grounded, so recalculate
-                // move direction directly from axes
-                if (pcCtrl)
-                {
-                    moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"));
-                    moveDirection *= speed;
-
-                    if (Input.GetButton("Jump"))
-                    {
-                        moveDirection.y = jumpSpeed;
-                    }
-                }
-                else
-                {
-                    moveDirection = new Vector3(-Input.GetAxis("switchH"), 0.0f, Input.GetAxis("switchV"));
-                    moveDirection *= speed;
-
-                    if (Input.GetButton("switchB"))
-                    {
-                        moveDirection.y = jumpSpeed;
-                    }
-                }
-            }
-
-
+            lookAtTarget.transform.localPosition = new Vector3(-Input.GetAxis("Vertical"), 0, Input.GetAxis("Horizontal"));
+            rotatedObj.transform.LookAt(lookAtTarget.transform);
         }
 
+        if (!isFalling)
+        {
+            lastPostCalc();
+            // We are grounded, so recalculate
+            // move direction directly from axes
+            if (pcCtrl)
+            {
+                moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"));
+                moveDirection *= speed;
+
+                if (Input.GetButton("Jump"))
+                {
+                    moveDirection.y = jumpSpeed;
+                }
+            }
+            else
+            {
+                moveDirection = new Vector3(-Input.GetAxis("switchH"), 0.0f, Input.GetAxis("switchV"));
+                moveDirection *= speed;
+
+                if (Input.GetButton("switchB"))
+                {
+                    moveDirection.y = jumpSpeed;
+                }
+            }
+        }
         // Apply gravity. Gravity is multiplied by deltaTime twice (once here, and once below
         // when the moveDirection is multiplied by deltaTime). This is because gravity should be applied
         // as an acceleration (ms^-2)
         moveDirection.y -= gravity * Time.deltaTime;
 
         // Move the controller
-        characterController.Move(moveDirection * Time.deltaTime);
+        if (gameObject.GetComponent<CharacterController>().enabled == true)
+        {
+            characterController.Move(moveDirection * Time.deltaTime);
+        }
     }
 }
