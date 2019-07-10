@@ -8,6 +8,9 @@ public class mapManager : MonoBehaviour {
     public Transform player;
     public GameObject floorPrefab;
     public Transform curFloor;
+    public Transform newFloor;
+    public float mapTransitionTime;
+    GameObject newFloorPar;
 
     void loadCurMap(Vector2 map)
     {
@@ -23,40 +26,77 @@ public class mapManager : MonoBehaviour {
     public void playerExit(string exitDir)
     {
         Vector3 curPos = player.localPosition;
+        Vector3 dirPos = Vector3.zero;
+        Vector3 plaPos = Vector3.zero;
+        Vector3 mapPos = Vector2.zero;
+
         if (exitDir == "north")
         {
-            player.localPosition = new Vector3(curPos.x, curPos.y, -5f);
-            curMap = new Vector2(curMap.x, curMap.y + 1);
+            dirPos = new Vector3(0, 0, 10);
+            plaPos = new Vector3(curPos.x, curPos.y, -5f);
+            mapPos = new Vector2(curMap.x, curMap.y+1);
+
         }
         else if (exitDir == "south")
         {
-            player.localPosition = new Vector3(curPos.x, curPos.y, 5f);
-            curMap = new Vector2(curMap.x, curMap.y - 1);
+            dirPos = new Vector3(0, 0, -10);
+            plaPos = new Vector3(curPos.x, curPos.y, 5f);
+            mapPos = new Vector2(curMap.x, curMap.y - 1);
         }
         else if (exitDir == "east")
         {
-            GameObject newFloor = new GameObject();
-            newFloor.transform.localPosition = new Vector3(10, 0, 0);
-            GameObject.Instantiate(floorPrefab, newFloor.transform);
-            player.GetComponent<CharacterController>().enabled = false;
-
-            StartCoroutine(repoPlayer(curPos));
+            dirPos = new Vector3(10, 0, 0);
+            plaPos = new Vector3(-5f, curPos.y, curPos.z);
+            mapPos = new Vector2(curMap.x + 1, curMap.y);
         }
         else if (exitDir == "west")
         {
-            player.localPosition = new Vector3(5f, curPos.y, curPos.z);
-            curMap = new Vector2(curMap.x - 1, curMap.y);
+            dirPos = new Vector3(-10, 0, 0);
+            plaPos = new Vector3(5f, curPos.y, curPos.z);
+            mapPos = new Vector2(curMap.x - 1, curMap.y);
         }
 
+        newFloorPar = new GameObject();
+        newFloorPar.transform.localPosition = dirPos;
+        int id = GetComponent<floorPrefabLib>().floorInd[mapPos];
+        floorPrefab = GetComponent<floorPrefabLib>().floorPrefabs[id];
+        newFloor = Instantiate(floorPrefab, newFloorPar.transform).transform;
+        player.GetComponent<CharacterController>().enabled = false;
+
+        curFloor.SetParent(newFloorPar.transform);
+        player.SetParent(newFloorPar.transform);
+        StartCoroutine(MoveOverSeconds(newFloorPar, new Vector3(0, 0, 0f), mapTransitionTime));
+        StartCoroutine(repoPlayer(curPos,plaPos, mapPos));
     }
 
-    IEnumerator repoPlayer(Vector3 curPos)
+    IEnumerator repoPlayer(Vector3 curPos, Vector3 plaPos, Vector2 mapPos)
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(mapTransitionTime);
 
-        player.localPosition = new Vector3(-5f, curPos.y, curPos.z);
-        curMap = new Vector2(curMap.x + 1, curMap.y);
+        player.SetParent(null);
+        newFloor.SetParent(null);
+        Destroy(curFloor.gameObject);
+        Destroy(newFloorPar);
+        curFloor = newFloor;
+        player.localPosition = plaPos;
+        curMap = mapPos;
         player.GetComponent<CharacterController>().enabled = true;
+    }
+
+    public IEnumerator MoveOverSeconds(GameObject objectToMove, Vector3 end, float seconds)
+    {
+        float elapsedTime = 0;
+        Vector3 startingPos = objectToMove.transform.position;
+        while (elapsedTime < seconds)
+        {
+            objectToMove.transform.position = Vector3.Lerp(startingPos, end, (elapsedTime / seconds));
+            elapsedTime += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        if (objectToMove) {
+            objectToMove.transform.position = end;
+        }
+        
     }
 
 }
