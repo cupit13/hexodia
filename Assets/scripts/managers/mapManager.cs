@@ -30,6 +30,8 @@ public class mapManager : MonoBehaviour {
         Vector3 plaPos = Vector3.zero;
         Vector3 mapPos = Vector2.zero;
 
+        player.gameObject.GetComponent<movement>().isEffect = true;
+
         if (exitDir == "north")
         {
             dirPos = new Vector3(0, 0, 10);
@@ -81,6 +83,7 @@ public class mapManager : MonoBehaviour {
         player.localPosition = plaPos;
         curMap = mapPos;
         player.GetComponent<CharacterController>().enabled = true;
+        player.gameObject.GetComponent<movement>().isEffect = false;
     }
 
     public IEnumerator MoveOverSeconds(GameObject objectToMove, Vector3 end, float seconds)

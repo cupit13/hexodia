@@ -23,19 +23,12 @@ public class movement : MonoBehaviour
     public Vector2 lastPos;
     public bool isFalling;
     public bool isOnEdge;
+    public bool isEffect;
 
     void Start()
     {
         characterController = GetComponent<CharacterController>();
     }
-
-    //void dirUpdate(float tx,float ty)
-    //{
-    //    float sum = Mathf.Pow(tx,2) + Mathf.Pow(ty, 2);
-    //    float sqrt = Mathf.Sqrt(sum);
-    //    float ry = Mathf.Rad2Deg * Mathf.Acos(tx/sqrt);
-    //    transform.eulerAngles = new Vector3 (0, ry, 0);
-    //}
 
     Vector2 roundedPosOp(float tx, float tz)
     {
@@ -80,14 +73,16 @@ public class movement : MonoBehaviour
     void Update()
     {
 
-
-        if (Mathf.Abs(moveDirection.x) > 0 || Mathf.Abs(moveDirection.y) > 0 || Mathf.Abs(moveDirection.z) > 0)
-        {
-            lookAtTarget.transform.localPosition = new Vector3(-Input.GetAxis("Vertical"), 0, Input.GetAxis("Horizontal"));
-            rotatedObj.transform.LookAt(lookAtTarget.transform);
+        if (!isEffect)
+        { 
+            if (Mathf.Abs(moveDirection.x) > 0 || Mathf.Abs(moveDirection.y) > 0 || Mathf.Abs(moveDirection.z) > 0)
+            {
+                lookAtTarget.transform.localPosition = new Vector3(-Input.GetAxis("Vertical"), 0, Input.GetAxis("Horizontal"));
+                rotatedObj.transform.LookAt(lookAtTarget.transform);
+            }
         }
 
-        if (!isFalling)
+        if (!isFalling || !isEffect)
         {
             lastPostCalc();
             // We are grounded, so recalculate

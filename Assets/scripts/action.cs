@@ -17,8 +17,8 @@ public class action : MonoBehaviour {
 
     void summonFire()
     {
+        GetComponent<movement>().isEffect = true;
         GameObject instFire = Instantiate(fire, dirObj);
-        //instFire.transform.localPosition = new Vector3(0,0,0);
         StartCoroutine(destroyDelay(instFire));
     }
 
@@ -26,5 +26,6 @@ public class action : MonoBehaviour {
     {
         yield return new WaitForSeconds(.3f);
         Destroy(obj);
+        GetComponent<movement>().isEffect = false;
     }
 }
