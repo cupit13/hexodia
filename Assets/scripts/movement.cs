@@ -24,10 +24,13 @@ public class movement : MonoBehaviour
     public bool isFalling;
     public bool isOnEdge;
     public bool isEffect;
+    public bool isDashing;
+    public bool dashReady;
 
     void Start()
     {
         characterController = GetComponent<CharacterController>();
+        isDashing = false;
     }
 
     Vector2 roundedPosOp(float tx, float tz)
@@ -73,7 +76,7 @@ public class movement : MonoBehaviour
     void Update()
     {
 
-        if (!isEffect)
+        if (!(isEffect || isDashing))
         { 
             if (Mathf.Abs(moveDirection.x) > 0 || Mathf.Abs(moveDirection.y) > 0 || Mathf.Abs(moveDirection.z) > 0)
             {
@@ -82,7 +85,7 @@ public class movement : MonoBehaviour
             }
         }
 
-        if (!isFalling || !isEffect)
+        if (!(isFalling || isEffect || isDashing))
         {
             lastPostCalc();
             // We are grounded, so recalculate

@@ -19,14 +19,18 @@ public class falling : MonoBehaviour {
     {
         if(other.tag == "Player")
         {
-            movement movScript = other.GetComponent<movement>();
-            movScript.isFalling = true;
-            other.GetComponent<CharacterController>().enabled = false;
+            if (!other.gameObject.GetComponent<movement>().isDashing)
+            {
+                movement movScript = other.GetComponent<movement>();
+                movScript.isFalling = true;
+                other.GetComponent<CharacterController>().enabled = false;
 
-            other.transform.position = new Vector3(transform.position.x, 0, transform.position.z);
+                other.transform.position = new Vector3(transform.position.x, 0, transform.position.z);
 
-            lastPos = movScript.lastPos;
-            StartCoroutine(returnToPos(other.transform, lastPos));
+                lastPos = movScript.lastPos;
+                StartCoroutine(returnToPos(other.transform, lastPos));
+            }
+
         }
     }
 }

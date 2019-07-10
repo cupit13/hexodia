@@ -12,6 +12,9 @@ public class edge : MonoBehaviour {
         {
             movScript.isOnEdge = true;
             movScript.lastPos = movScript.roundedPos;
+        }else if (other.tag == "hole")
+        {
+            movScript.dashReady = true;
         }
     }
 
@@ -20,6 +23,9 @@ public class edge : MonoBehaviour {
         if (other.tag == "edge")
         {
             movScript.isOnEdge = false;
+        }else if(other.tag == "hole")
+        {
+            movScript.dashReady = false;
         }
     }
 }
