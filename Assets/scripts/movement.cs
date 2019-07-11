@@ -26,6 +26,8 @@ public class movement : MonoBehaviour
     public bool isEffect;
     public bool isDashing;
     public bool dashReady;
+    public bool powerFire;
+    public bool powerWind;
 
     void Start()
     {
@@ -75,6 +77,10 @@ public class movement : MonoBehaviour
     }
     void Update()
     {
+        if (transform.position.y > .6f)
+        {
+            transform.position = new Vector3(transform.position.x, .58f, transform.position.z);
+        }
 
         if (!(isEffect || isDashing))
         { 
@@ -119,7 +125,7 @@ public class movement : MonoBehaviour
         // Move the controller
         if (gameObject.GetComponent<CharacterController>().enabled == true)
         {
-            characterController.Move(moveDirection * Time.deltaTime);
+            characterController.Move(new Vector3(moveDirection.x,0,moveDirection.z) * Time.deltaTime);
         }
     }
 }

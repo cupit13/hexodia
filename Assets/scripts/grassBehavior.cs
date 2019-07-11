@@ -7,7 +7,7 @@ public class grassBehavior : MonoBehaviour {
     public GameObject parent;
     private void OnTriggerEnter(Collider other)
     {
-        print(other);
+        //print(other);
         if (other.tag == "fire")
         {
             Destroy(parent);

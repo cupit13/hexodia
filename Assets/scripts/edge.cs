@@ -5,6 +5,7 @@ using UnityEngine;
 public class edge : MonoBehaviour {
 
     public movement movScript;
+    public GameObject interactUI;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -15,6 +16,9 @@ public class edge : MonoBehaviour {
         }else if (other.tag == "hole")
         {
             movScript.dashReady = true;
+        }else if (other.tag == "interactable")
+        {
+            interactUI.SetActive(true);
         }
     }
 
@@ -26,6 +30,10 @@ public class edge : MonoBehaviour {
         }else if(other.tag == "hole")
         {
             movScript.dashReady = false;
+        }
+        else if (other.tag == "interactable")
+        {
+            interactUI.SetActive(false);
         }
     }
 }

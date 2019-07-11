@@ -14,7 +14,7 @@ public class mapManager : MonoBehaviour {
 
     void loadCurMap(Vector2 map)
     {
-        print(map + "loaded");
+        //print(map + "loaded");
     }
 
 	// Use this for initialization
@@ -29,6 +29,8 @@ public class mapManager : MonoBehaviour {
         Vector3 dirPos = Vector3.zero;
         Vector3 plaPos = Vector3.zero;
         Vector3 mapPos = Vector2.zero;
+
+        player.gameObject.GetComponent<movement>().isOnEdge = false;
 
         player.gameObject.GetComponent<movement>().isEffect = true;
 

@@ -18,11 +18,17 @@ public class action : MonoBehaviour {
         {
             if (Input.GetButtonDown("Jump"))
             {
-                summonDash(1.7f);
+                if (GetComponent<movement>().powerWind)
+                {
+                    summonDash(1.7f);
+                }
             }
             if (Input.GetButtonDown("Fire"))
             {
-                summonFire();
+                if (GetComponent<movement>().powerFire)
+                {
+                    summonFire();
+                }
             }
         }
     }
