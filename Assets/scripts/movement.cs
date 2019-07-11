@@ -28,6 +28,7 @@ public class movement : MonoBehaviour
     public bool dashReady;
     public bool powerFire;
     public bool powerWind;
+    public bool isGusted;
 
     void Start()
     {
@@ -123,7 +124,7 @@ public class movement : MonoBehaviour
         moveDirection.y -= gravity * Time.deltaTime;
 
         // Move the controller
-        if (gameObject.GetComponent<CharacterController>().enabled == true)
+        if (gameObject.GetComponent<CharacterController>().enabled == true && !isGusted)
         {
             characterController.Move(new Vector3(moveDirection.x,0,moveDirection.z) * Time.deltaTime);
         }

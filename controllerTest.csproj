@@ -83,6 +83,7 @@
     <Compile Include="Assets\scripts\edge.cs" />
     <Compile Include="Assets\scripts\falling.cs" />
     <Compile Include="Assets\scripts\grassBehavior.cs" />
+    <Compile Include="Assets\scripts\gustBehavior.cs" />
     <Compile Include="Assets\scripts\interactables.cs" />
     <Compile Include="Assets\scripts\managers\exitBoolCheck.cs" />
     <Compile Include="Assets\scripts\managers\floorPrefabLib.cs" />
